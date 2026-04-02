@@ -185,7 +185,7 @@ app.post("/create-booking", async (req, res) => {
       start:        appointmentDateTime,
       attendee: {
         name:     patientName,
-        email:    patientEmail || `${patientPhone.replace(/\D/g, "")}@noemail.placeholder`,
+        email:    email: patientEmail || `${(patientPhone || "").replace(/\D/g, "")}@noemail.placeholder`,
         timeZone: "America/Vancouver",
         language: "en"
       },
@@ -225,7 +225,9 @@ app.post("/create-booking", async (req, res) => {
     await twilioClient.messages.create({
       body: patientSMS,
       from: process.env.TWILIO_PHONE_NUMBER,
-      to:   patientPhone.startsWith("+") ? patientPhone : "+1" + patientPhone.replace(/\D/g, "")
+      to:   to: (patientPhone || "").startsWith("+")
+  ? patientPhone
+  : "+1" + (patientPhone || "").replace(/\D/g, "")
     });
 
     // ── Send SMS to doctor/clinic ────────────────────────
